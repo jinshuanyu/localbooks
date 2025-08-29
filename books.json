@@ -1,0 +1,136 @@
+{
+  "books": [
+    {
+      "title": "毛衣勾到了",
+      "author": "作者：趙小傑\n繪者：森酪梨",
+      "publisher": "小康軒",
+      "grade_specific": "一上",
+      "grade_category": "低",
+      "source": "喜閱網",
+      "publication_date": "2021-11-15",
+      "isbn": "9789865357078",
+      "translator": ""
+    },
+    {
+      "title": "陶樂蒂的開學日",
+      "author": "作者：陶樂蒂  \n繪者：陶樂蒂，黃郁欽",
+      "publisher": "親子天下",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2018-08-03",
+      "isbn": "9789579095808",
+      "translator": ""
+    },
+    {
+      "title": "你幾歲？",
+      "author": "作者：林良  \n繪者：趙國宗",
+      "publisher": "信誼基金",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2009-11-12",
+      "isbn": "9789576420627",
+      "translator": ""
+    },
+    {
+      "title": "要處罰雲朵了",
+      "author": "作者：觸光寫作  \n繪者：柳壽米（Ryoo, Soo-mi）",
+      "publisher": "上誼文化",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2010-12-09",
+      "isbn": "9789577625021",
+      "translator": ""
+    },
+    {
+      "title": "再讓我睡五分鐘",
+      "author": "作者：吳如萍  \n繪者：張又然",
+      "publisher": "小熊出版",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2010-06-16",
+      "isbn": "9789861204686",
+      "translator": ""
+    },
+    {
+      "title": "我的怪物朋友",
+      "author": "作者：觸光寫作  \n繪者：阿爾比（Albi）",
+      "publisher": "上誼文化",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2011-03-05",
+      "isbn": "9789577625168",
+      "translator": ""
+    },
+    {
+      "title": "上學前，先去動物園",
+      "author": "作者：羅蘋  \n繪者：曾好",
+      "publisher": "信誼基金",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2013-08-02",
+      "isbn": "9789861613587",
+      "translator": ""
+    },
+    {
+      "title": "Bradley Bear 牛仔布萊德利",
+      "author": "作者：也品出品  \n繪者：方片",
+      "publisher": "也品文化",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2018-01-23",
+      "isbn": "9789869603344",
+      "translator": ""
+    },
+    {
+      "title": "超有事的肉包子（新版）",
+      "author": "作者：葉聖陶  \n繪者：嘎嘎（李國立）",
+      "publisher": "步步出版社",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2015-01-08",
+      "isbn": "9789865852340",
+      "translator": ""
+    },
+    {
+      "title": "有空陪我玩",
+      "author": "作者：會本主義兒童文學研究中心  \n繪者：柳秀美",
+      "publisher": "小天下",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2013-08-13",
+      "isbn": "9789863202284",
+      "translator": ""
+    },
+    {
+      "title": "那天我們換座位",
+      "author": "作者：凌寧  \n繪者：鄭明進",
+      "publisher": "格林文化",
+      "grade_specific": "",
+      "grade_category": "",
+      "source": "喜閱網",
+      "publication_date": "2011-10-08",
+      "isbn": "9789861894801",
+      "translator": ""
+    },
+    {
+      "title": "奇妙好味道",
+      "author": "作者：朱琪",
+      "publisher": "惠友文化",
+      "grade_specific": "",
+      "grade_category": "低",
+      "source": "布可星球",
+      "publication_date": "",
+      "isbn": "",
+      "translator": ""
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>本土圖書推薦查詢</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    body{font-family:'Noto Sans TC',sans-serif}
+    .filter-btn.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;transform:translateY(-1px)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{animation:fadeIn .25s ease-out}
+    details>summary::-webkit-details-marker{display:none}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 via-indigo-50 to-sky-50 min-h-screen">
+  <main class="container mx-auto p-4 sm:p-6 md:p-8 max-w-7xl">
+    <section class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-10 border border-white/30">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl sm:text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">本土圖書推薦查詢</h1>
+        <p class="mt-2 text-gray-600">資料來源：<span class="font-medium text-blue-700">喜閱網</span>＋<span class="font-medium text-green-700">布可星球</span></p>
+      </header>
+
+      <!-- 年級篩選 -->
+      <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6" id="filter-controls">
+        <button class="filter-btn active px-4 sm:px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200" data-grade="all">🌟 全部</button>
+        <button class="filter-btn px-4 sm:px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200" data-grade="低">🌱 低年級</button>
+        <button class="filter-btn px-4 sm:px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200" data-grade="中">🌿 中年級</button>
+        <button class="filter-btn px-4 sm:px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200" data-grade="高">🌳 高年級</button>
+      </div>
+
+      <!-- 關鍵字搜尋 -->
+      <div class="max-w-2xl mx-auto mb-6">
+        <div class="relative">
+          <input id="search-input" class="w-full px-5 py-3 pl-12 rounded-2xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-100" placeholder="搜尋：書名 / 作者 / 出版社 / ISBN" />
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.2-5.2M15 10a5 5 0 11-10 0 5 5 0 0110 0z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="text-center mb-4">
+        <span id="result-count" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800"></span>
+      </div>
+
+      <!-- 資料表 -->
+      <div id="table-wrap" class="overflow-x-auto rounded-2xl border border-gray-200 shadow-inner bg-gray-50/70 hidden">
+        <table class="w-full min-w-[900px] text-sm">
+          <thead class="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+            <tr>
+              <th class="px-4 py-3 text-left">書名</th>
+              <th class="px-4 py-3 text-left">作者/繪者</th>
+              <th class="px-4 py-3 text-left">出版社</th>
+              <th class="px-4 py-3 text-center">建議年級</th>
+              <th class="px-4 py-3 text-center">來源</th>
+              <th class="px-4 py-3 text-center">資訊</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+
+      <div id="no-results" class="hidden text-center py-12">
+        <p class="text-gray-600 text-lg">找不到結果，請調整篩選或關鍵字。</p>
+      </div>
+    </section>
+
+    <footer class="text-center mt-6 text-gray-600 text-sm">
+      <p>© Christina Yu | 本頁面僅供教學與查詢使用</p>
+    </footer>
+  </main>
+
+  <script>
+    const tbody = document.getElementById("tbody");
+    const resultCount = document.getElementById("result-count");
+    const tableWrap = document.getElementById("table-wrap");
+    const noResults = document.getElementById("no-results");
+    const searchInput = document.getElementById("search-input");
+    const filterControls = document.getElementById("filter-controls");
+
+    let ALL = [];
+    let gradeFilter = "all";
+    let q = "";
+
+    function badge(source){
+      const cls = source === "喜閱網" ? "bg-blue-100 text-blue-700 border border-blue-200" : "bg-green-100 text-green-700 border border-green-200";
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs ${cls}">${source}</span>`;
+    }
+
+    function safe(v){ return (v ?? "").toString(); }
+
+    function render(){
+      let arr = ALL.filter(b => gradeFilter === "all" ? true : (safe(b.grade_category) === gradeFilter));
+      const term = q.trim().toLowerCase();
+      if(term){
+        arr = arr.filter(b => [b.title, b.author, b.publisher, b.isbn].map(x => safe(x).toLowerCase()).some(s => s.includes(term)));
+      }
+
+      tbody.innerHTML = "";
+      resultCount.textContent = `📚 共 ${arr.length} 本`;
+
+      if(arr.length === 0){
+        tableWrap.classList.add("hidden");
+        noResults.classList.remove("hidden");
+        return;
+      } else {
+        tableWrap.classList.remove("hidden");
+        noResults.classList.add("hidden");
+      }
+
+      arr.forEach((b,i)=>{
+        const gradeDisp = b.grade_specific && b.grade_specific.trim()
+          ? b.grade_specific
+          : (safe(b.grade_category) ? `<span class="text-gray-400 italic">（${safe(b.grade_category)}年級）</span>` : "");
+
+        const hasTranslator = b.translator && b.translator.trim();
+
+        const details = `
+          <details class="group">
+            <summary class="cursor-pointer select-none flex items-center justify-center gap-1 text-indigo-700 hover:underline">
+              <span>更多</span>
+              <svg class="w-4 h-4 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.116l3.71-3.885a.75.75 0 111.08 1.04l-4.24 4.44a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+            </summary>
+            <div class="mt-2 text-xs text-gray-600 px-2 pb-2">
+              <div><span class="text-gray-500">出版日期：</span>${safe(b.publication_date) || "—"}</div>
+              <div><span class="text-gray-500">ISBN：</span>${safe(b.isbn) || "—"}</div>
+              ${hasTranslator ? `<div><span class="text-gray-500">譯者：</span>${safe(b.translator)}</div>` : ""}
+            </div>
+          </details>
+        `;
+
+        const tr = document.createElement("tr");
+        tr.className = "bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all fade-in";
+        tr.style.animationDelay = (i*0.01)+"s";
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-medium">${safe(b.title)}</td>
+          <td class="px-4 py-3 whitespace-pre-wrap text-gray-700">${safe(b.author)}</td>
+          <td class="px-4 py-3">${safe(b.publisher)}</td>
+          <td class="px-4 py-3 text-center">${gradeDisp || " "}</td>
+          <td class="px-4 py-3 text-center">${badge(safe(b.source))}</td>
+          <td class="px-4 py-3 text-center">${details}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    filterControls.addEventListener("click", (e)=>{
+      if(e.target.matches("button.filter-btn")){
+        filterControls.querySelectorAll("button.filter-btn").forEach(b=>b.classList.remove("active"));
+        e.target.classList.add("active");
+        gradeFilter = e.target.dataset.grade;
+        render();
+      }
+    });
+
+    searchInput.addEventListener("input", (e)=>{
+      q = e.target.value;
+      render();
+    });
+
+    (async function(){
+      try{
+        const res = await fetch("books.json", {cache: "no-store"});
+        const data = await res.json();
+        ALL = data.books || [];
+      }catch(err){
+        console.error("載入 books.json 失敗：", err);
+        ALL = [];
+      }
+      render();
+      tableWrap.classList.toggle("hidden", ALL.length===0);
+      noResults.classList.toggle("hidden", ALL.length!==0);
+    })();
+  </script>
+</body>
+</html>
